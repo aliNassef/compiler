@@ -23,9 +23,19 @@ class Parser {
   }
 
   Expr parseExpr({int parentPrecedence = 0}) {
-    var left = parsePrimary();
+    late var left;
+    final unaryPerencence = _current.unaryPredicate();
+
+    if (unaryPerencence != 0 && unaryPerencence >= parentPrecedence) {
+       final operator = consume();
+      final right = parseExpr(parentPrecedence: unaryPerencence);
+      left = UnaryExpr(operator, right);
+    } else {
+      left = parsePrimary();
+    }
+
     while (true) {
-      final precedence = _current.getPredicate();
+      final precedence = _current.binaryPredicate();
       if (precedence == 0 || precedence <= parentPrecedence) {
         break;
       }
@@ -60,9 +70,20 @@ class Parser {
       String newIndent = indent + (isLast ? "    " : "│   ");
 
       _printNode(node.left, newIndent, false);
+      _printNode(node.right, newIndent, true);
+    } else if (node is UnaryExpr) {
+      print("UnaryExpr('${node.operator.value}')");
+      String newIndent = indent + (isLast ? "    " : "│   ");
 
       _printNode(node.right, newIndent, true);
     }
+  }
+
+  void reportError() {
+    if (_errors.isEmpty) return;
+    _errors.forEach((error) {
+      print(error);
+    });
   }
 }
 
@@ -88,4 +109,14 @@ class BinaryExpr extends Expr {
   @override
   String toString() =>
       'left: $left, BinaryExpr(${operator.value}, right: $right)';
+}
+
+class UnaryExpr extends Expr {
+  final Token operator;
+  final Expr right;
+
+  UnaryExpr(this.operator, this.right);
+
+  @override
+  String toString() => 'UnaryExpr(${operator.value}, right: $right)';
 }

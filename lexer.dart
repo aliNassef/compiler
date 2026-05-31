@@ -18,12 +18,21 @@ class Token {
 
   Token(this.type, this.value);
 
-  int getPredicate() {
+  int binaryPredicate() {
     switch (type) {
       case TokenType.Plus || TokenType.Minus:
         return 1;
       case TokenType.Multiply || TokenType.Divide:
         return 2;
+      default:
+        return 0;
+    }
+  }
+
+  int unaryPredicate() {
+    switch (type) {
+      case TokenType.Minus:
+        return 3;
       default:
         return 0;
     }
