@@ -14,6 +14,6 @@ void main() {
       print('Token: ${token.type}, Value: ${token.value}');
     });
 
-    print('Errors: ${lexer.errors}');
+    lexer.reportError();
   }
 }
