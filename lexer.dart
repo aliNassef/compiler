@@ -1,13 +1,33 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'extensions.dart';
 
-enum TokenType { Number, WhiteSpace, Plus, Minus, Multiply, Divide, Invalid }
+enum TokenType {
+  Number,
+  WhiteSpace,
+  Plus,
+  Minus,
+  Multiply,
+  Divide,
+  Invalid,
+  EOF,
+}
 
 class Token {
   TokenType type;
   String value;
 
   Token(this.type, this.value);
+
+  int getPredicate() {
+    switch (type) {
+      case TokenType.Plus || TokenType.Minus:
+        return 1;
+      case TokenType.Multiply || TokenType.Divide:
+        return 2;
+      default:
+        return 0;
+    }
+  }
 }
 
 class Lexer {
@@ -33,7 +53,8 @@ class Lexer {
           _lexeme += _peak();
           _position++;
         }
-        _tokens.add(Token(.WhiteSpace, _lexeme));
+        // todo: handle white space in parser, for now we just ignore it.
+        // _tokens.add(Token(.WhiteSpace, _lexeme));
       } else if (_peak().isPlus()) {
         _tokens.add(Token(.Plus, _peak()));
         _position++;
