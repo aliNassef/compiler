@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'evaluator.dart';
 import 'lexer.dart';
 import 'parser.dart';
 
@@ -20,6 +21,11 @@ void main() {
     print('Expr: $expr');
     print('\n Tree:');
     parser.printTree(expr);
+    parser.reportError();
     print('Parse Complete');
+    Evaluator evaluatte = Evaluator();
+    final resultOfEvaluate = evaluatte.evaluate(expr);
+    print('Result Of Evaluation is ${resultOfEvaluate}');
+    evaluatte.reportError();
   }
 }
