@@ -26,4 +26,12 @@ extension StringExtension on String {
   bool isDivide() {
     return this == '/';
   }
+
+  bool isOpenPran() {
+    return this == '(';
+  }
+
+  bool isClosePran() {
+    return this == ')';
+  }
 }

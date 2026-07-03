@@ -20,3 +20,6 @@ tokens = 10 + 20 * 3
 
 ```
 
+
+
+steps : lexer -> new keyword, parser -> parse new structure 
