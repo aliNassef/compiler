@@ -1,7 +1,6 @@
 import 'dart:io';
-
-import 'lexer.dart';
-import 'parser.dart';
+import 'expresions.dart';
+import 'token.dart';
 
 class Evaluator {
   List<String> _errors = [];
@@ -40,7 +39,7 @@ class Evaluator {
     }
   }
 
- void reportError() {
+  void reportError() {
     if (_errors.isEmpty) return;
     _errors.forEach((error) {
       print(error);

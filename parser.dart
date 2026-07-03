@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'lexer.dart';
+import 'expresions.dart';
+import 'token.dart';
 
 class Parser {
   List<String> _errors = [];
@@ -16,6 +17,14 @@ class Parser {
     if (_current.type == TokenType.Number) {
       final token = consume();
       return NumberExpr(double.parse(token.value));
+    } else if (_current.type == .OpenPran) {
+      consume();
+      final exp = parseExpr();
+      if (_match(.ClosePran)) {
+        consume();
+        return exp;
+      }
+      exit(0);
     } else {
       _errors.add('Expected number, found ${_current.value}');
       exit(0);
@@ -27,7 +36,7 @@ class Parser {
     final unaryPerencence = _current.unaryPredicate();
 
     if (unaryPerencence != 0 && unaryPerencence >= parentPrecedence) {
-       final operator = consume();
+      final operator = consume();
       final right = parseExpr(parentPrecedence: unaryPerencence);
       left = UnaryExpr(operator, right);
     } else {
@@ -85,38 +94,14 @@ class Parser {
       print(error);
     });
   }
-}
 
-abstract class Node {}
-
-class Expr extends Node {}
-
-class NumberExpr extends Expr {
-  final double value;
-  NumberExpr(this.value);
-
-  @override
-  String toString() => 'NumberExpr($value)';
-}
-
-class BinaryExpr extends Expr {
-  final Expr left;
-  final Token operator;
-  final Expr right;
-
-  BinaryExpr(this.left, this.operator, this.right);
-
-  @override
-  String toString() =>
-      'left: $left, BinaryExpr(${operator.value}, right: $right)';
-}
-
-class UnaryExpr extends Expr {
-  final Token operator;
-  final Expr right;
-
-  UnaryExpr(this.operator, this.right);
-
-  @override
-  String toString() => 'UnaryExpr(${operator.value}, right: $right)';
+  bool _match(TokenType expected) {
+    if (_current.type == expected) {
+      return true;
+    }
+    _errors.add(
+      'Error : expected a token ${expected} but got ${_current.type}',
+    );
+    return false;
+  }
 }
